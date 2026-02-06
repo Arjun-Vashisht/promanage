@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://127.0.0.1:8000/api";
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const login = async (username, password) => {
   const response = await axios.post(`${BASE_URL}/token/`, {
@@ -25,7 +25,7 @@ export const refreshAccessToken = async () => {
   const refresh = localStorage.getItem("refreshToken");
 
   const response = await axios.post(
-    "http://127.0.0.1:8000/api/token/refresh/",
+    `${BASE_URL}/token/refresh/`,
     { refresh }
   );
 

@@ -15,3 +15,4 @@ media/
 
 
 .git-credentials
+.env
