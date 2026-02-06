@@ -1,0 +1,17 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Virtual Environment
+myvenv/
+venv/
+
+# Django
+*.sqlite3
+*.log
+media/
+
+
+.git-credentials
