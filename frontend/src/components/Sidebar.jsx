@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Sidebar = ({ projects, selectedProject, onSelect }) => {
   return (
     <aside className="w-64 bg-white border-r flex flex-col">
@@ -27,6 +29,17 @@ const Sidebar = ({ projects, selectedProject, onSelect }) => {
           </div>
         ))}
       </div>
+      <div className="mt-4 border-t pt-3">
+
+        <Link
+            to="/activity-logs"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+        >
+            Activity Logs
+        </Link>
+
+    </div>
+
     </aside>
   );
 };

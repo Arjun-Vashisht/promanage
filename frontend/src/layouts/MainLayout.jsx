@@ -1,7 +1,15 @@
+import Navbar from "../components/Navbar";
+
 const MainLayout = ({ children }) => {
   return (
-    <div className="flex h-screen bg-gray-100 text-gray-900">
-      {children}
+    <div className="h-screen flex flex-col">
+      
+      <Navbar />
+
+      <div className="flex flex-1 bg-gray-100">
+        {children}
+      </div>
+
     </div>
   );
 };
