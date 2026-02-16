@@ -6,6 +6,7 @@ import Sidebar from "../components/Sidebar";
 import TaskCard from "../components/TaskCard";
 import Modal from "../components/Modal";
 import CreateTaskForm from "../components/CreateTaskForm";
+import KanbanBoard from "../components/KanbanBoard";
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -75,16 +76,9 @@ const Dashboard = () => {
 
 
         {selectedProject && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onStatusChange={updateTaskStatus}
-              />
-            ))}
-          </div>
+            <KanbanBoard tasks={tasks} setTasks={setTasks} />
         )}
+
       </main>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
