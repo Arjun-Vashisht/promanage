@@ -6,6 +6,7 @@ from core.tasks import log_activity
 
 from .models import Task
 from .serializers import TaskSerializer
+from django.db import models
 
 class TaskListCreateView(APIView):
 
@@ -13,9 +14,11 @@ class TaskListCreateView(APIView):
         project_id = request.query_params.get('project_id')
 
         if project_id:
-            tasks = Task.objects.filter(project_id=project_id)
+            tasks = Task.objects.filter(
+                project_id=project_id
+            ).order_by('status', 'order', 'created_at')
         else:
-            tasks = Task.objects.all()
+            tasks = Task.objects.all().order_by('status', 'order', 'created_at')
 
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -25,8 +28,19 @@ class TaskListCreateView(APIView):
         serializer = TaskSerializer(data=request.data)
 
         if serializer.is_valid():
-            task = serializer.save()
-            print("CELERY TASK TRIGGERED")
+
+            project_id = serializer.validated_data.get("project").id
+            status_val = serializer.validated_data.get("status", "TODO")
+
+            last_task = Task.objects.filter(
+                project_id=project_id,
+                status=status_val
+            ).order_by("-order").first()
+
+            next_order = last_task.order + 1 if last_task else 0
+
+            task = serializer.save(order=next_order)
+
             log_activity.delay(
                 action="TASK_CREATED",
                 user_id=request.user.id if request.user.is_authenticated else None,
@@ -43,10 +57,17 @@ class TaskListCreateView(APIView):
 
 
 
+
 class TaskDetailView(APIView):
 
     def patch(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
+
+        old_status = task.status
+        old_order = task.order
+
+        new_status = request.data.get("status", old_status)
+        new_order = request.data.get("order", old_order)
 
         serializer = TaskSerializer(
             task,
@@ -55,18 +76,56 @@ class TaskDetailView(APIView):
         )
 
         if serializer.is_valid():
-            serializer.save()
+
+            # If status changed, shift orders in both columns
+            if new_status != old_status:
+
+                # shift down tasks in new column
+                Task.objects.filter(
+                    project=task.project,
+                    status=new_status,
+                    order__gte=new_order
+                ).update(order=models.F("order") + 1)
+
+                # shift up tasks in old column
+                Task.objects.filter(
+                    project=task.project,
+                    status=old_status,
+                    order__gt=old_order
+                ).update(order=models.F("order") - 1)
+
+            else:
+                # same column reorder
+
+                if new_order > old_order:
+                    Task.objects.filter(
+                        project=task.project,
+                        status=old_status,
+                        order__gt=old_order,
+                        order__lte=new_order
+                    ).update(order=models.F("order") - 1)
+
+                elif new_order < old_order:
+                    Task.objects.filter(
+                        project=task.project,
+                        status=old_status,
+                        order__gte=new_order,
+                        order__lt=old_order
+                    ).update(order=models.F("order") + 1)
+
+            updated_task = serializer.save()
 
             log_activity.delay(
                 action="TASK_UPDATED",
                 user_id=request.user.id if request.user.is_authenticated else None,
                 meta={
-                    "task_id": task.id,
+                    "task_id": updated_task.id,
                     "updated_fields": list(request.data.keys())
                 }
             )
+
             return Response(
-                serializer.data,
+                TaskSerializer(updated_task).data,
                 status=status.HTTP_200_OK
             )
 
