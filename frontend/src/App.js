@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import PrivateRoute from "./routes/PrivateRoutes";
 import ActivityLogs from "./pages/ActivityLogs";
+import Profile from "./pages/Profile";
+import MainLayout from "./layouts/MainLayout";
 
 function App() {
   return (
@@ -17,7 +19,7 @@ function App() {
           path="/"
           element={
             <PrivateRoute>
-              <Dashboard />
+                <Dashboard />
             </PrivateRoute>
           }
         />
@@ -25,7 +27,19 @@ function App() {
           path="/activity-logs"
           element={
             <PrivateRoute>
-              <ActivityLogs />
+              <MainLayout>
+                <ActivityLogs />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <MainLayout>
+                <Profile />
+              </MainLayout>
             </PrivateRoute>
           }
         />

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'tasks',
     'activity_logs',
     'corsheaders',
+    'users',
 ]
 
 MIDDLEWARE = [

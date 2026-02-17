@@ -3,7 +3,6 @@ import api from "../api/axios";
 
 import MainLayout from "../layouts/MainLayout";
 import Sidebar from "../components/Sidebar";
-import TaskCard from "../components/TaskCard";
 import Modal from "../components/Modal";
 import CreateTaskForm from "../components/CreateTaskForm";
 import KanbanBoard from "../components/KanbanBoard";
