@@ -1,47 +1,35 @@
-import { Link } from "react-router-dom";
-
-const Navbar = () => {
+export default function Navbar() {
 
   const username = localStorage.getItem("username");
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-
+  const logout = () => {
+    localStorage.clear();
     window.location.href = "/login";
   };
 
   return (
-    <div className="flex justify-between items-center bg-white border-b px-6 py-3 shadow-sm">
 
-      {/* Left side */}
-      <h1 className="font-semibold text-lg text-blue-600">
-        <Link to="/">ProManage</Link>
-      </h1>
+    <div className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
 
-      {/* Right side */}
-      <div className="flex items-center gap-4">
-
-        <Link
-            to="/profile"
-            className="text-blue-600 hover:underline"
-        >
-            {username}
-        </Link>
-
-        <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-3 py-1 rounded"
-        >
-            Logout
-        </button>
-
+      <div className="text-gray-800 font-medium">
+        Welcome, {username}
       </div>
 
+      <button
+        className="
+          px-4 py-2
+          bg-indigo-600
+          text-white
+          rounded-md
+          hover:bg-indigo-700
+          transition
+        "
+      >
+        Logout
+      </button>
 
     </div>
-  );
-};
 
-export default Navbar;
+  );
+
+}

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 
 import MainLayout from "../layouts/MainLayout";
-import Sidebar from "../components/Sidebar";
 import Modal from "../components/Modal";
 import CreateTaskForm from "../components/CreateTaskForm";
 import KanbanBoard from "../components/KanbanBoard";
@@ -18,13 +17,28 @@ const Dashboard = () => {
   }, []);
 
   const fetchProjects = async () => {
-    const res = await api.get("projects/");
-    setProjects(res.data);
+    try {
+      const res = await api.get("projects/");
+      setProjects(res.data);
+
+      // Auto-select first project (professional UX)
+      if (res.data.length > 0 && !selectedProject) {
+        setSelectedProject(res.data[0]);
+        fetchTasks(res.data[0].id);
+      }
+
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
   };
 
   const fetchTasks = async (projectId) => {
-    const res = await api.get(`tasks/?project_id=${projectId}`);
-    setTasks(res.data);
+    try {
+      const res = await api.get(`tasks/?project_id=${projectId}`);
+      setTasks(res.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
   };
 
   const handleProjectSelect = (project) => {
@@ -32,63 +46,104 @@ const Dashboard = () => {
     fetchTasks(project.id);
   };
 
-  const updateTaskStatus = async (taskId, status) => {
-    await api.patch(`tasks/${taskId}/`, { status });
-
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId ? { ...t, status } : t
-      )
-    );
-  };
-
   return (
     <MainLayout>
-      <Sidebar
-        projects={projects}
-        selectedProject={selectedProject}
-        onSelect={handleProjectSelect}
-      />
 
-      {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto">
-        <h1 className="text-2xl font-semibold mb-6">
-          {selectedProject
-            ? selectedProject.name
-            : "Select a project"}
-        </h1>
+      <div className="flex w-full">
 
-        {!selectedProject && (
-            <p className="text-gray-500">
-                Choose a project from the sidebar to view tasks.
-            </p>
-        )}
+        {/* Project list panel */}
+        <div className="w-64 bg-white border-r border-gray-200 p-4">
 
-        {selectedProject && (
-            <button
+          <h2 className="text-sm font-semibold text-gray-500 mb-3">
+            PROJECTS
+          </h2>
+
+          <div className="space-y-1">
+
+            {projects.map((project) => {
+
+              const active = selectedProject?.id === project.id;
+
+              return (
+                <button
+                  key={project.id}
+                  onClick={() => handleProjectSelect(project)}
+                  className={`
+                    w-full text-left px-3 py-2 rounded-md text-sm transition
+                    ${
+                      active
+                        ? "bg-indigo-50 text-indigo-600 font-medium"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }
+                  `}
+                >
+                  {project.name}
+                </button>
+              );
+
+            })}
+
+          </div>
+
+        </div>
+
+        {/* Main Kanban area */}
+        <div className="flex-1 p-6">
+
+          <div className="flex items-center justify-between mb-6">
+
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                {selectedProject?.name || "Select a project"}
+              </h1>
+
+              <p className="text-sm text-gray-500">
+                Manage tasks using Kanban board
+              </p>
+            </div>
+
+            {selectedProject && (
+              <button
                 onClick={() => setShowModal(true)}
-                className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
+                className="
+                  px-4 py-2
+                  bg-indigo-600
+                  text-white
+                  rounded-md
+                  hover:bg-indigo-700
+                  transition
+                  font-medium
+                "
+              >
                 + New Task
-            </button>
-        )}
+              </button>
+            )}
 
+          </div>
 
-        {selectedProject && (
+          {!selectedProject && (
+            <div className="text-gray-500">
+              Select a project to view tasks
+            </div>
+          )}
+
+          {selectedProject && (
             <KanbanBoard tasks={tasks} setTasks={setTasks} />
-        )}
+          )}
 
-      </main>
+        </div>
+
+      </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <CreateTaskForm
-            projectId={selectedProject?.id}
-            onCreated={(task) => {
-            setTasks((prev) => [task, ...prev]);
+          projectId={selectedProject?.id}
+          onCreated={(task) => {
+            setTasks((prev) => [...prev, task]);
             setShowModal(false);
-            }}
+          }}
         />
-       </Modal>
+      </Modal>
 
     </MainLayout>
   );

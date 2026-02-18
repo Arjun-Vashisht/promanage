@@ -1,8 +1,9 @@
 const TaskCard = ({ task, onStatusChange }) => {
   return (
-    <div className="bg-white rounded-lg border p-4 shadow-sm hover:shadow transition">
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-indigo-300 transition cursor-pointer">
+
       <div className="flex justify-between items-start">
-        <h3 className="font-medium">{task.title}</h3>
+        <div className="font-medium text-gray-900">{task.title}</div>
         <span className="text-xs px-2 py-1 rounded bg-gray-100">
           {task.priority}
         </span>

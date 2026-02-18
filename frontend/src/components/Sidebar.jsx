@@ -1,47 +1,72 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  User,
+  Activity
+} from "lucide-react";
 
-const Sidebar = ({ projects, selectedProject, onSelect }) => {
+export default function Sidebar() {
+
+  const location = useLocation();
+
+  const menu = [
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/"
+    },
+    {
+      name: "Profile",
+      icon: User,
+      path: "/profile"
+    },
+    {
+      name: "Activity Logs",
+      icon: Activity,
+      path: "/activity-logs"
+    }
+  ];
+
   return (
-    <aside className="w-64 bg-white border-r flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b">
-        <h2 className="text-xl font-semibold">ProManage</h2>
+    <div className="w-64 bg-white border-r border-gray-200 shadow-sm">
+
+      <div className="p-5 text-xl font-semibold text-indigo-600 border-b">
+        ProManage
       </div>
 
-      {/* Projects */}
-      <div className="flex-1 overflow-y-auto p-3">
-        <p className="text-xs uppercase text-gray-400 mb-2">
-          Projects
-        </p>
 
-        {projects.map((project) => (
-          <div
-            key={project.id}
-            onClick={() => onSelect(project)}
-            className={`px-3 py-2 rounded-md cursor-pointer mb-1 transition
-              ${
-                selectedProject?.id === project.id
-                  ? "bg-blue-100 text-blue-700 font-medium"
-                  : "hover:bg-gray-100"
-              }`}
-          >
-            {project.name}
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 border-t pt-3">
+      <nav className="flex-1">
 
-        <Link
-            to="/activity-logs"
-            className="block px-3 py-2 rounded hover:bg-gray-100"
-        >
-            Activity Logs
-        </Link>
+        {menu.map(item => {
+
+          const Icon = item.icon;
+
+          const active = location.pathname === item.path;
+
+          return (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={`
+                flex items-center gap-3 px-4 py-3
+                hover:bg-gray-100 transition
+                ${active
+                  ? "bg-indigo-50 text-indigo-600 border-r-2 border-indigo-600"
+                  : "text-gray-700"
+                }
+
+              `}
+            >
+              <Icon size={18} />
+              {item.name}
+            </Link>
+          );
+
+        })}
+
+      </nav>
 
     </div>
-
-    </aside>
   );
-};
 
-export default Sidebar;
+}
