@@ -42,3 +42,6 @@ python manage.py runserver
 cd frontend
 npm install
 npm start
+
+###celery
+celery -A backend worker --loglevel=info --pool=solo
