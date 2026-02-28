@@ -11,7 +11,6 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!title.trim()) return;
 
     try {
@@ -27,7 +26,6 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
 
       onCreated(res.data);
 
-      // Reset form
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");
@@ -41,18 +39,22 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-4">
 
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
         Create Task
       </h2>
 
       {/* Title */}
       <input
         className="
-          w-full border border-gray-300
-          rounded-md px-3 py-2 mb-3
+          w-full
+          border border-gray-300 dark:border-gray-700
+          bg-white dark:bg-gray-800
+          text-gray-900 dark:text-gray-200
+          rounded-lg px-3 py-2
           focus:outline-none focus:ring-2 focus:ring-indigo-500
+          transition
         "
         placeholder="Task title"
         value={title}
@@ -63,9 +65,13 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
       {/* Description */}
       <textarea
         className="
-          w-full border border-gray-300
-          rounded-md px-3 py-2 mb-3
+          w-full
+          border border-gray-300 dark:border-gray-700
+          bg-white dark:bg-gray-800
+          text-gray-900 dark:text-gray-200
+          rounded-lg px-3 py-2
           focus:outline-none focus:ring-2 focus:ring-indigo-500
+          transition
         "
         placeholder="Description (optional)"
         value={description}
@@ -76,9 +82,13 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
       {/* Priority */}
       <select
         className="
-          w-full border border-gray-300
-          rounded-md px-3 py-2 mb-3
+          w-full
+          border border-gray-300 dark:border-gray-700
+          bg-white dark:bg-gray-800
+          text-gray-900 dark:text-gray-200
+          rounded-lg px-3 py-2
           focus:outline-none focus:ring-2 focus:ring-indigo-500
+          transition
         "
         value={priority}
         onChange={(e) => setPriority(e.target.value)}
@@ -91,9 +101,13 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
       {/* Assign User */}
       <select
         className="
-          w-full border border-gray-300
-          rounded-md px-3 py-2 mb-4
+          w-full
+          border border-gray-300 dark:border-gray-700
+          bg-white dark:bg-gray-800
+          text-gray-900 dark:text-gray-200
+          rounded-lg px-3 py-2
           focus:outline-none focus:ring-2 focus:ring-indigo-500
+          transition
         "
         value={assignedTo}
         onChange={(e) => setAssignedTo(e.target.value)}
@@ -105,7 +119,6 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
             {user.username}
           </option>
         ))}
-
       </select>
 
       {/* Submit Button */}
@@ -113,11 +126,10 @@ const CreateTaskForm = ({ projectId, onCreated, users }) => {
         disabled={loading}
         className="
           w-full
-          bg-indigo-600
-          text-white
-          py-2
-          rounded-md
+          bg-indigo-600 text-white
+          py-2 rounded-lg
           hover:bg-indigo-700
+          disabled:opacity-50
           transition
           font-medium
         "

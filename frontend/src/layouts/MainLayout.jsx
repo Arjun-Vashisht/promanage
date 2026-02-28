@@ -5,7 +5,12 @@ const MainLayout = ({ children }) => {
 
   return (
 
-    <div className="h-screen flex bg-gray-50 text-gray-900">
+    <div className="
+      h-screen flex
+      bg-gray-50 dark:bg-gray-950
+      text-gray-900 dark:text-gray-100
+      transition-colors
+    ">
 
       {/* Sidebar */}
       <Sidebar />
@@ -17,7 +22,11 @@ const MainLayout = ({ children }) => {
         <Navbar />
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="
+          flex-1 overflow-y-auto p-6
+          bg-gray-100 dark:bg-gray-900
+          transition-colors
+        ">
           {children}
         </main>
 

@@ -156,10 +156,15 @@ const Dashboard = () => {
       <div className="flex w-full">
 
         {/* SIDEBAR */}
-        <div className="w-64 bg-white border-r border-gray-200 p-4 flex flex-col">
-
+        <div className="
+          w-64
+          bg-white dark:bg-gray-900
+          border-r border-gray-200 dark:border-gray-800
+          p-4 flex flex-col
+          transition-colors
+        ">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-sm font-semibold text-gray-500">
+            <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400">
               PROJECTS
             </h2>
 
@@ -185,8 +190,8 @@ const Dashboard = () => {
                     px-3 py-2 rounded-md text-sm transition
                     ${
                       active
-                        ? "bg-indigo-50 text-indigo-600 font-medium"
-                        : "text-gray-700 hover:bg-gray-100"
+                        ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-medium"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }
                   `}
                 >
@@ -230,15 +235,15 @@ const Dashboard = () => {
         </div>
 
         {/* MAIN */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 bg-gray-100 dark:bg-gray-900 transition-colors">
 
           <div className="flex justify-between items-center mb-6">
 
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                 {selectedProject?.name || "Select a project"}
               </h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Manage tasks using Kanban board
               </p>
             </div>
@@ -265,7 +270,12 @@ const Dashboard = () => {
               <select
                 value={userFilter}
                 onChange={(e) => setUserFilter(e.target.value)}
-                className="border px-3 py-2 rounded-md"
+                className="
+                  border border-gray-300 dark:border-gray-700
+                  bg-white dark:bg-gray-800
+                  text-gray-700 dark:text-gray-200
+                  px-3 py-2 rounded-md
+                "
               >
                 <option value="">All Users</option>
                 {users.map(user => (
@@ -278,7 +288,7 @@ const Dashboard = () => {
           )}
 
           {!selectedProject && (
-            <div className="text-gray-500">
+            <div className="text-gray-500 dark:text-gray-400">
               Select a project to view tasks
             </div>
           )}
@@ -329,11 +339,18 @@ const Dashboard = () => {
             onChange={(e) => setNewProjectName(e.target.value)}
             placeholder="Project name"
             className="
-              w-full border border-gray-300
-              rounded-md px-3 py-2 mb-4
-              focus:ring-2 focus:ring-indigo-500
+              w-full
+              border border-gray-300 dark:border-gray-700
+              bg-white dark:bg-gray-800
+              text-gray-900 dark:text-gray-200
+              placeholder-gray-400 dark:placeholder-gray-500
+              rounded-lg
+              px-3 py-2 mb-4
+              focus:outline-none focus:ring-2 focus:ring-indigo-500
+              transition
             "
           />
+
 
           <button
             onClick={
@@ -367,7 +384,7 @@ const Dashboard = () => {
             Delete Project
           </h2>
 
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             Are you sure you want to delete
             <span className="font-semibold">
               {" "} {projectToDelete?.name} {" "}
